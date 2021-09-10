@@ -1,5 +1,14 @@
 package ru.sber.io
 
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.nio.charset.Charset
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
+import java.util.zip.ZipInputStream
+import java.util.zip.ZipOutputStream
+
 /**
  * Реализовать методы архивации и разархивации файла.
  * Для реализиации использовать ZipInputStream и ZipOutputStream.
@@ -12,6 +21,14 @@ class Archivator {
      */
     fun zipLogfile() {
 
+        ZipOutputStream(FileOutputStream("io\\logfile.zip")).use { zip ->
+            zip.putNextEntry(ZipEntry("io\\logfile.log"))
+            zip.write(FileInputStream("io\\logfile.log").use { input ->
+                input.readAllBytes()
+            })
+        }
+
+
     }
 
     /**
@@ -20,5 +37,12 @@ class Archivator {
      */
     fun unzipLogfile() {
 
+        FileOutputStream("io\\unzippedLogfile.log").use { out ->
+            ZipInputStream(FileInputStream("io\\logfile.zip")).use { zip ->
+                zip.nextEntry
+                out.write(zip.readAllBytes())
+            }
+        }
     }
+
 }
